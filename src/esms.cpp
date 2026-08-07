@@ -1905,14 +1905,11 @@ void create_stats_file(string work_dir)
 }
 
 
-// Generate a random number up to 10000. If the given p is
-// less than the generated number, return 1, otherwise return 0
+// Generate a random number in the range [0, 10000). If it is less than
+// p, return 1; otherwise return 0.
 //
-// Used to "throw dice" and check if an event with some probability
-// happened. p is 0..10000 - for example 2000 means probability 0.2
-// So when 2000 is given, this function simulates an event with
-// probability 0.2 and tells if it happened (naturally it has
-// a prob. of 0.2 to happen)
+// This is used to check whether an event occurs with probability p / 10000.
+// For example, p = 2000 gives the event a probability of 0.2 (20%).
 //
 int randomp(int p)
 {
