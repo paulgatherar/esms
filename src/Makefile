@@ -1,56 +1,95 @@
 include makefile.linux
 
 CCFLAGS = $(MODE) -c -Wall -pedantic -ansi
+SRC_DIR = .
+BIN_DIR= ../bin
+OBJ_DIR = $(BIN_DIR)/obj
+
+FIXTURES = $(BIN_DIR)/fixtures
+ROSTER_CREATOR = $(BIN_DIR)/roster_creator
+TSC = $(BIN_DIR)/tsc
+ESMS = $(BIN_DIR)/esms
+UPDTR = $(BIN_DIR)/updtr
+LGTABLE = $(BIN_DIR)/lgtable
 
 ESMS_O_FILES = \
-	rosterplayer.o comment.o penalty.o report_event.o esms.o cond_utils.o \
-	teamsheet_reader.o \
-	cond_action.o cond_condition.o util.o cond.o mt.o config.o tactics.o anyoption.o
+	$(OBJ_DIR)/rosterplayer.o \
+	$(OBJ_DIR)/comment.o \
+	$(OBJ_DIR)/penalty.o \
+	$(OBJ_DIR)/report_event.o \
+	$(OBJ_DIR)/esms.o \
+	$(OBJ_DIR)/cond_utils.o \
+	$(OBJ_DIR)/teamsheet_reader.o \
+	$(OBJ_DIR)/cond_action.o \
+	$(OBJ_DIR)/cond_condition.o \
+	$(OBJ_DIR)/util.o \
+	$(OBJ_DIR)/cond.o \
+	$(OBJ_DIR)/mt.o \
+	$(OBJ_DIR)/config.o \
+	$(OBJ_DIR)/tactics.o \
+	$(OBJ_DIR)/anyoption.o
 
 UPDTR_O_FILES = \
-	rosterplayer.o updtr.o util.o anyoption.o config.o comment.o league_table.o
+	$(OBJ_DIR)/rosterplayer.o \
+	$(OBJ_DIR)/updtr.o \
+	$(OBJ_DIR)/util.o \
+	$(OBJ_DIR)/anyoption.o \
+	$(OBJ_DIR)/config.o \
+	$(OBJ_DIR)/comment.o \
+	$(OBJ_DIR)/league_table.o
 
 LGTABLE_O_FILES = \
-	lgtable.o league_table.o util.o anyoption.o
+	$(OBJ_DIR)/lgtable.o \
+	$(OBJ_DIR)/league_table.o \
+	$(OBJ_DIR)/util.o \
+	$(OBJ_DIR)/anyoption.o
 
 FIXTURES_O_FILES = \
-	fixtures.o util.o anyoption.o
+	$(OBJ_DIR)/fixtures.o \
+	$(OBJ_DIR)/util.o \
+	$(OBJ_DIR)/anyoption.o
 
 TSC_O_FILES = \
-	tsc.o rosterplayer.o util.o config.o
+	$(OBJ_DIR)/tsc.o \
+	$(OBJ_DIR)/rosterplayer.o \
+	$(OBJ_DIR)/util.o \
+	$(OBJ_DIR)/config.o
 
 ROSTER_CREATOR_O_FILES = \
-	roster_creator.o rosterplayer.o anyoption.o config.o util.o
+	$(OBJ_DIR)/roster_creator.o \
+	$(OBJ_DIR)/rosterplayer.o \
+	$(OBJ_DIR)/anyoption.o \
+	$(OBJ_DIR)/config.o \
+	$(OBJ_DIR)/util.o
 
-.cpp.o:
-	$(CC) $(CCFLAGS) $*.cpp
+.PHONY: all clean
 
-all: esms roster_creator lgtable updtr fixtures tsc
+all: $(ESMS) $(ROSTER_CREATOR) $(LGTABLE) $(UPDTR) $(FIXTURES) $(TSC)
 
-tsc: $(TSC_O_FILES)
-	$(CC) -o tsc $(TSC_O_FILES)
-	$(CP_TOOL) tsc $(CP_DEST)
+$(TSC): $(TSC_O_FILES) | $(BIN_DIR)
+	$(CC) -o $@ $^
 
-roster_creator: $(ROSTER_CREATOR_O_FILES)
-	$(CC) -o roster_creator $(ROSTER_CREATOR_O_FILES)
-	$(CP_TOOL) roster_creator $(CP_DEST)
+$(ROSTER_CREATOR): $(ROSTER_CREATOR_O_FILES) | $(BIN_DIR)
+	$(CC) -o $@ $^
 
-lgtable: $(LGTABLE_O_FILES)
-	$(CC) -o lgtable $(LGTABLE_O_FILES)
-	$(CP_TOOL) lgtable $(CP_DEST)
+$(LGTABLE): $(LGTABLE_O_FILES) | $(BIN_DIR)
+	$(CC) -o $@ $^
 
-updtr: $(UPDTR_O_FILES) 
-	$(CC) -o updtr $(UPDTR_O_FILES)
-	$(CP_TOOL) updtr $(CP_DEST)
+$(UPDTR): $(UPDTR_O_FILES)  | $(BIN_DIR)
+	$(CC) -o $@ $^
 
-esms: $(ESMS_O_FILES)
-	$(CC) -o esms $(ESMS_O_FILES)
-	$(CP_TOOL) esms $(CP_DEST)
+$(ESMS): $(ESMS_O_FILES) | $(BIN_DIR)
+	$(CC) -o $@ $^
 
-fixtures: $(FIXTURES_O_FILES)
-	$(CC) -o fixtures $(FIXTURES_O_FILES)
-	$(CP_TOOL) fixtures $(CP_DEST)
+$(FIXTURES): $(FIXTURES_O_FILES) | $(BIN_DIR)
+	$(CC) -o $@ $^
+
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CC) $(CCFLAGS) -c $< -o $@
+
+$(BIN_DIR) $(OBJ_DIR):
+	mkdir -p $@
 
 clean: 
-	\rm -f $(LGTABLE_O_FILES) $(FIXTURES_O_FILES) $(ESMS_O_FILES) $(UPDTR_O_FILES) $(TSC_O_FILES) $(ROSTER_CREATOR_O_FILES) tsc esms updtr lgtable fixtures roster_creator
+	\rm -rf $(BIN_DIR)
 
