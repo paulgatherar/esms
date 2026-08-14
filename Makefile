@@ -1,8 +1,8 @@
 include makefile.linux
 
 CCFLAGS = $(MODE) -c -Wall -pedantic -ansi
-SRC_DIR = .
-BIN_DIR= ../bin
+SRC_DIR = src
+BIN_DIR = bin
 OBJ_DIR = $(BIN_DIR)/obj
 
 FIXTURES = $(BIN_DIR)/fixtures
